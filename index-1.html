@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATHENA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400;1,6..96,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0906;
+    --surface:#161310;
+    --surface-2:#201b15;
+    --border:rgba(205,168,106,.16);
+    --border-strong:rgba(205,168,106,.34);
+    --text:#f3ede0;
+    --text-muted:#a89a86;
+    --accent:#cda86a;
+    --accent-bright:#e9c98a;
+    --accent-soft:rgba(205,168,106,.14);
+    --gold:#cda86a;
+    --danger:#b8695c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:var(--bg);color:var(--text);}
+  body{
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    direction:ltr;
+    text-align:left;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(55vw 55vw at 12% -12%, rgba(205,168,106,.09), transparent 62%),
+      radial-gradient(45vw 45vw at 108% 8%, rgba(205,168,106,.05), transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+  nav{
+    position:relative;
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:40px 24px 22px;
+    gap:10px;
+  }
+  .wordmark{
+    font-family:'Bodoni Moda',serif;
+    font-size:30px;
+    font-weight:500;
+    letter-spacing:.24em;
+    color:var(--text);
+  }
+  .wordmark span{color:var(--accent);}
+  .kicker{
+    font-family:'Inter',sans-serif;
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.32em;
+    color:var(--text-muted);
+    text-transform:uppercase;
+  }
+  .nav-rule{
+    width:36px;height:1px;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin-top:2px;
+  }
+  main{
+    position:relative;
+    z-index:1;
+    flex:1;
+    width:100%;
+    max-width:920px;
+    margin:0 auto;
+    padding:48px 24px 80px;
+  }
+  .hero{text-align:center;margin-bottom:64px;}
+  .hero h1{
+    font-family:'Bodoni Moda',serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(30px,4.4vw,44px);
+    letter-spacing:-.01em;
+    margin-bottom:12px;
+  }
+  .hero p{
+    color:var(--text-muted);
+    font-size:14px;
+    letter-spacing:.03em;
+    margin-bottom:40px;
+  }
+  .dropzone{
+    position:relative;
+    border:1px solid var(--border);
+    border-radius:2px;
+    background:linear-gradient(180deg, rgba(205,168,106,.03), transparent);
+    padding:64px 24px;
+    text-align:center;
+    transition:border-color .25s ease, background .25s ease;
+    cursor:pointer;
+  }
+  .dropzone::before,.dropzone::after,
+  .dropzone .corner-br,.dropzone .corner-bl{
+    content:"";
+    position:absolute;
+    width:18px;height:18px;
+    border-color:var(--accent);
+    opacity:.7;
+  }
+  .dropzone::before{top:-1px;left:-1px;border-top:1px solid var(--accent);border-left:1px solid var(--accent);}
+  .dropzone::after{top:-1px;right:-1px;border-top:1px solid var(--accent);border-right:1px solid var(--accent);}
+  .dropzone .corner-bl{bottom:-1px;left:-1px;border-bottom:1px solid var(--accent);border-left:1px solid var(--accent);}
+  .dropzone .corner-br{bottom:-1px;right:-1px;border-bottom:1px solid var(--accent);border-right:1px solid var(--accent);}
+  .dropzone.drag{
+    border-color:var(--border-strong);
+    background:var(--accent-soft);
+  }
+  .dropzone svg{margin-bottom:20px;opacity:.85;}
+  .dropzone h2{
+    font-family:'Bodoni Moda',serif;
+    font-weight:500;
+    font-size:21px;
+    margin-bottom:8px;
+  }
+  .dropzone p{color:var(--text-muted);font-size:13.5px;letter-spacing:.02em;margin-bottom:30px;}
+  .select-btn{
+    font-family:'Inter',sans-serif;
+    background:linear-gradient(135deg,#b3874c,var(--accent-bright) 45%,#b3874c);
+    color:#1a1408;
+    border:none;
+    padding:14px 38px;
+    border-radius:2px;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.16em;
+    cursor:pointer;
+    box-shadow:0 1px 0 rgba(255,255,255,.25) inset;
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  }
+  .select-btn:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 10px 24px rgba(205,168,106,.22), 0 1px 0 rgba(255,255,255,.25) inset;}
+  .select-btn:active{transform:translateY(0);}
+  input[type=file]{display:none;}
+
+  section.library h3{
+    font-family:'Bodoni Moda',serif;
+    font-weight:500;
+    font-size:15px;
+    letter-spacing:.24em;
+    margin-bottom:22px;
+    color:var(--text-muted);
+    text-align:center;
+  }
+  .empty{
+    color:var(--text-muted);
+    font-size:14px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:32px;
+    text-align:center;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:16px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:2px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    transition:border-color .2s ease;
+  }
+  .card::before{
+    content:"";
+    position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);
+    transform:scaleX(0);
+    transition:transform .3s ease;
+  }
+  .card:hover::before{transform:scaleX(1);}
+  .card:hover{border-color:var(--border-strong);}
+  .thumb{
+    aspect-ratio:16/9;
+    background:var(--surface-2);
+    position:relative;
+    overflow:hidden;
+  }
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .thumb .placeholder{
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-muted);
+  }
+  .card-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1;}
+  .card-name{font-size:13.5px;font-weight:500;line-height:1.35;word-break:break-word;}
+  .card-meta{font-size:12px;color:var(--text-muted);display:flex;gap:8px;flex-wrap:wrap;}
+  .progress-wrap{margin-top:2px;}
+  .progress-track{
+    height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;background:linear-gradient(90deg,#b3874c,var(--accent-bright));
+    width:0%;transition:width .2s ease;
+  }
+  .progress-info{
+    display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);margin-top:6px;
+  }
+  .status{
+    font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .status.done{color:var(--accent-bright);}
+  .status.uploading{color:var(--text-muted);}
+  .card-actions{display:flex;gap:8px;margin-top:auto;padding-top:4px;}
+  .card-actions button{
+    flex:1;
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.05em;
+    padding:9px 0;
+    border-radius:2px;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text);
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+  }
+  .card-actions button:hover{background:var(--surface-2);border-color:var(--border-strong);}
+  .card-actions button.danger:hover{color:var(--danger);border-color:var(--danger);}
+  .queue-actions{display:flex;gap:8px;}
+  .queue-actions button{
+    font-size:11px;padding:6px 10px;border-radius:7px;
+    border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;
+  }
+  .queue-actions button:hover{color:var(--text);border-color:var(--border-strong);}
+
+  .overlay{
+    position:fixed;inset:0;background:rgba(6,7,10,.72);
+    backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;
+    z-index:10;padding:20px;
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:var(--surface);
+    border:1px solid var(--border-strong);
+    border-radius:2px;
+    width:100%;max-width:640px;
+    overflow:hidden;
+  }
+  .modal video{width:100%;display:block;background:#000;max-height:60vh;}
+  .modal-body{padding:22px 24px 24px;}
+  .modal-body h4{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:500;font-size:19px;margin-bottom:10px;word-break:break-word;}
+  .modal-meta{color:var(--text-muted);font-size:12.5px;letter-spacing:.03em;margin-bottom:20px;}
+  .modal-actions{display:flex;gap:10px;}
+  .modal-actions button{
+    flex:1;padding:12px 0;border-radius:2px;font-size:11.5px;font-weight:600;letter-spacing:.1em;
+    border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;
+  }
+  .modal-actions .primary{background:linear-gradient(135deg,#b3874c,var(--accent-bright) 45%,#b3874c);color:#1a1408;border:none;}
+  .modal-actions .danger{color:var(--danger);border-color:rgba(184,105,92,.35);}
+  .close-x{
+    position:absolute;top:14px;right:16px;
+    background:none;border:none;color:var(--text-muted);
+    font-size:20px;cursor:pointer;
+  }
+  .modal{position:relative;}
+
+  footer{
+    position:relative;z-index:1;
+    text-align:center;padding:30px;
+    color:var(--text-muted);
+    font-family:'Bodoni Moda',serif;
+    font-style:italic;
+    font-size:13px;
+    letter-spacing:.02em;
+    border-top:1px solid var(--border);
+  }
+  footer .g{color:var(--gold);}
+
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+    background:var(--surface);border:1px solid var(--border-strong);
+    color:var(--text);font-size:13px;
+    padding:12px 20px;border-radius:2px;
+    box-shadow:0 12px 30px rgba(0,0,0,.4);
+    opacity:0;pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:50;max-width:88vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast a, .toast .link-text{color:var(--accent-bright);word-break:break-all;}
+
+  @media (max-width:520px){
+    .dropzone{padding:40px 16px;}
+    .grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wordmark">ATHEN<span>A</span></div>
+  <div class="nav-rule"></div>
+  <div class="kicker">Private Video Studio</div>
+</nav>
+
+<main>
+  <section class="hero">
+    <h1>Upload your video</h1>
+    <p>Drag &amp; drop your video here or click to browse</p>
+
+    <div class="dropzone" id="dropzone">
+      <div class="corner-bl"></div><div class="corner-br"></div>
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#cda86a" stroke-width="1.2"><path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h2>Drop your video to begin</h2>
+      <p>No small limits here — this is built for large files</p>
+      <button class="select-btn" id="selectBtn" type="button">SELECT VIDEO</button>
+      <input type="file" id="fileInput" accept="video/*" multiple>
+    </div>
+  </section>
+
+  <section class="library">
+    <h3>MY VIDEOS</h3>
+    <div class="empty" id="emptyState">No videos yet — upload your first one above.</div>
+    <div class="grid" id="grid"></div>
+  </section>
+</main>
+
+<footer>ATHENA — Your personal video uploader</footer>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="close-x" id="closeModal">✕</button>
+    <video id="modalVideo" controls></video>
+    <div class="modal-body">
+      <h4 id="modalName"></h4>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-actions">
+        <button class="primary" id="modalDownload">DOWNLOAD</button>
+        <button id="modalLink">GET LINK</button>
+        <button class="danger" id="modalDelete">DELETE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const selectBtn = document.getElementById('selectBtn');
+  const grid = document.getElementById('grid');
+  const emptyState = document.getElementById('emptyState');
+  const overlay = document.getElementById('overlay');
+  const modalVideo = document.getElementById('modalVideo');
+  const modalName = document.getElementById('modalName');
+  const modalMeta = document.getElementById('modalMeta');
+  const modalDownload = document.getElementById('modalDownload');
+  const modalDelete = document.getElementById('modalDelete');
+
+  const videos = new Map();
+  let openId = null;
+
+  function formatBytes(bytes){
+    if(bytes === 0) return '0 MB';
+    const mb = bytes / (1024*1024);
+    if(mb < 1000) return mb.toFixed(1) + ' MB';
+    return (mb/1024).toFixed(2) + ' GB';
+  }
+
+  function formatDate(d){
+    return d.toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric'});
+  }
+
+  function updateEmptyState(){
+    emptyState.style.display = videos.size ? 'none' : 'block';
+  }
+
+  selectBtn.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('click', (e) => { if(e.target === selectBtn) return; fileInput.click(); });
+
+  ['dragenter','dragover'].forEach(evt => {
+    dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('drag'); });
+  });
+  ['dragleave','drop'].forEach(evt => {
+    dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('drag'); });
+  });
+  dropzone.addEventListener('drop', e => {
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', e => {
+    handleFiles(e.target.files);
+    fileInput.value = '';
+  });
+
+  function handleFiles(fileList){
+    Array.from(fileList).forEach(file => {
+      if(!file.type.startsWith('video/')) return;
+      addVideo(file);
+    });
+  }
+
+  function addVideo(file){
+    const id = 'v' + Date.now() + Math.random().toString(36).slice(2,7);
+    const url = URL.createObjectURL(file);
+    const record = {
+      id, file, url,
+      name: file.name,
+      size: file.size,
+      date: new Date(),
+      progress: 0,
+      speed: 0,
+      status: 'uploading',
+      paused: false,
+      thumb: null
+    };
+    videos.set(id, record);
+    renderCard(record);
+    generateThumbnail(record);
+    simulateUpload(record);
+    updateEmptyState();
+  }
+
+  function generateThumbnail(record){
+    const v = document.createElement('video');
+    v.src = record.url;
+    v.muted = true;
+    v.addEventListener('loadeddata', () => {
+      try { v.currentTime = Math.min(1, (v.duration || 2) / 3); } catch(e){}
+    });
+    v.addEventListener('seeked', () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 320; canvas.height = 180;
+      const ctx = canvas.getContext('2d');
+      try{
+        ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+        record.thumb = canvas.toDataURL('image/jpeg', 0.7);
+        const img = document.querySelector('#card-'+record.id+' .thumb');
+        if(img) img.innerHTML = '<img src="'+record.thumb+'" alt="">';
+      }catch(e){}
+    });
+  }
+
+  function renderCard(record){
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'card-' + record.id;
+    card.innerHTML = `
+      <div class="thumb"><div class="placeholder">···</div></div>
+      <div class="card-body">
+        <div class="card-name">${escapeHtml(record.name)}</div>
+        <div class="card-meta">
+          <span>${formatBytes(record.size)}</span>
+          <span>${formatDate(record.date)}</span>
+        </div>
+        <div class="progress-wrap" id="pwrap-${record.id}">
+          <div class="progress-track"><div class="progress-fill" id="pfill-${record.id}"></div></div>
+          <div class="progress-info">
+            <span id="pstatus-${record.id}" class="status uploading">Uploading…</span>
+            <span id="pdetail-${record.id}"></span>
+          </div>
+          <div class="queue-actions" style="margin-top:8px;">
+            <button data-action="pause" data-id="${record.id}">Pause</button>
+            <button data-action="cancel" data-id="${record.id}">Cancel</button>
+          </div>
+        </div>
+        <div class="card-actions" id="actions-${record.id}" style="display:none;">
+          <button data-action="view" data-id="${record.id}">VIEW</button>
+          <button data-action="download" data-id="${record.id}">DOWNLOAD</button>
+          <button data-action="link" data-id="${record.id}" id="linkbtn-${record.id}">GET LINK</button>
+          <button class="danger" data-action="delete" data-id="${record.id}">DELETE</button>
+        </div>
+      </div>
+    `;
+    grid.prepend(card);
+  }
+
+  function escapeHtml(s){
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function simulateUpload(record){
+    const totalMB = record.size / (1024*1024);
+    const speedMBs = 6 + Math.random()*14;
+    const interval = setInterval(() => {
+      if(record.status !== 'uploading') { clearInterval(interval); return; }
+      if(record.paused) return;
+      const uploadedMB = (record.progress/100) * totalMB + speedMBs*0.2;
+      record.progress = Math.min(100, (uploadedMB/totalMB)*100);
+      record.speed = speedMBs;
+      const remainingMB = totalMB - uploadedMB;
+      const remainingSec = Math.max(0, remainingMB / speedMBs);
+
+      const fill = document.getElementById('pfill-'+record.id);
+      const detail = document.getElementById('pdetail-'+record.id);
+      const statusEl = document.getElementById('pstatus-'+record.id);
+      if(fill) fill.style.width = record.progress.toFixed(0)+'%';
+      if(detail) detail.textContent = speedMBs.toFixed(1)+' MB/s · '+Math.ceil(remainingSec)+'s left';
+      if(statusEl) statusEl.textContent = record.progress.toFixed(0)+'%';
+
+      if(record.progress >= 100){
+        clearInterval(interval);
+        record.status = 'done';
+        finishUpload(record);
+      }
+    }, 200);
+    record._interval = interval;
+  }
+
+  function finishUpload(record){
+    const pwrap = document.getElementById('pwrap-'+record.id);
+    const actions = document.getElementById('actions-'+record.id);
+    if(pwrap){
+      pwrap.innerHTML = '<span class="status done">Upload Complete ✓</span>';
+    }
+    if(actions) actions.style.display = 'flex';
+  }
+
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function showToast(html, ms){
+    toastEl.innerHTML = html;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms || 4000);
+  }
+
+  async function copyText(text){
+    try{ await navigator.clipboard.writeText(text); return true; }
+    catch(e){ return false; }
+  }
+
+  async function getShareLink(record, btn){
+    if(record.shareLink){
+      const ok = await copyText(record.shareLink);
+      showToast('<span class="link-text">'+record.shareLink+'</span><br>'+(ok ? 'Link copied' : 'Copy it manually above'));
+      return;
+    }
+    if(record.size > 200*1024*1024){
+      showToast('This file is over 200 MB — the free link host cannot take it. Use Download and share the file directly.', 5000);
+      return;
+    }
+    const originalText = btn ? btn.textContent : null;
+    if(btn){ btn.textContent = 'Uploading…'; btn.disabled = true; }
+    showToast('Uploading a copy so we can generate a public link…', 6000);
+    try{
+      const form = new FormData();
+      form.append('reqtype', 'fileupload');
+      form.append('fileToUpload', record.file);
+      const res = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
+      const text = (await res.text()).trim();
+      if(!res.ok || !text.startsWith('http')){
+        throw new Error(text || 'upload failed');
+      }
+      record.shareLink = text;
+      if(btn){ btn.textContent = 'COPY LINK'; btn.disabled = false; }
+      const ok = await copyText(text);
+      showToast('<span class="link-text">'+text+'</span><br>'+(ok ? 'Link copied' : 'Copy it manually above'), 7000);
+    }catch(err){
+      if(btn){ btn.textContent = originalText; btn.disabled = false; }
+      showToast('Could not create a link right now — try again in a moment.', 4000);
+    }
+  }
+
+  grid.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-action]');
+    if(!btn) return;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    const record = videos.get(id);
+    if(!record) return;
+
+    if(action === 'pause'){
+      record.paused = !record.paused;
+      btn.textContent = record.paused ? 'Resume' : 'Pause';
+    }
+    if(action === 'cancel'){
+      clearInterval(record._interval);
+      URL.revokeObjectURL(record.url);
+      videos.delete(id);
+      document.getElementById('card-'+id)?.remove();
+      updateEmptyState();
+    }
+    if(action === 'view'){
+      openModal(record);
+    }
+    if(action === 'download'){
+      downloadRecord(record);
+    }
+    if(action === 'link'){
+      getShareLink(record, btn);
+    }
+    if(action === 'delete'){
+      deleteRecord(id);
+    }
+  });
+
+  function openModal(record){
+    openId = record.id;
+    modalVideo.src = record.url;
+    modalName.textContent = record.name;
+    modalMeta.textContent = formatBytes(record.size) + ' · uploaded ' + formatDate(record.date);
+    modalLinkBtn.textContent = record.shareLink ? 'COPY LINK' : 'GET LINK';
+    modalLinkBtn.disabled = false;
+    overlay.classList.add('open');
+  }
+  function closeModalFn(){
+    overlay.classList.remove('open');
+    modalVideo.pause();
+    modalVideo.removeAttribute('src');
+    modalVideo.load();
+    openId = null;
+  }
+  document.getElementById('closeModal').addEventListener('click', closeModalFn);
+  overlay.addEventListener('click', e => { if(e.target === overlay) closeModalFn(); });
+
+  function downloadRecord(record){
+    const a = document.createElement('a');
+    a.href = record.url;
+    a.download = record.name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+  modalDownload.addEventListener('click', () => {
+    if(openId) downloadRecord(videos.get(openId));
+  });
+  const modalLinkBtn = document.getElementById('modalLink');
+  modalLinkBtn.addEventListener('click', () => {
+    if(openId) getShareLink(videos.get(openId), modalLinkBtn);
+  });
+
+  function deleteRecord(id){
+    const record = videos.get(id);
+    if(!record) return;
+    clearInterval(record._interval);
+    URL.revokeObjectURL(record.url);
+    videos.delete(id);
+    document.getElementById('card-'+id)?.remove();
+    if(openId === id) closeModalFn();
+    updateEmptyState();
+  }
+  modalDelete.addEventListener('click', () => {
+    if(openId) deleteRecord(openId);
+  });
+</script>
+
+</body>
+</html>
